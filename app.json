@@ -9,9 +9,19 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Travel Diary needs camera access to capture your travel photos.",
+        "NSLocationWhenInUseUsageDescription": "Travel Diary uses your location to attach your current address to each travel entry.",
+        "NSUserNotificationUsageDescription": "Travel Diary sends a local reminder when a travel entry is saved."
+      }
     },
     "android": {
+      "permissions": [
+        "CAMERA",
+        "ACCESS_FINE_LOCATION",
+        "POST_NOTIFICATIONS"
+      ],
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -27,6 +37,19 @@
     },
     "plugins": [
       "expo-router",
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "Travel Diary needs camera access to capture your travel photos."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Travel Diary uses your location to attach your current address to each travel entry."
+        }
+      ],
+      "expo-notifications",
       [
         "expo-splash-screen",
         {
