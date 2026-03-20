@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { Colors } from "@/constants/theme";
+import { Colors, Fonts } from "@/constants/theme";
 import { useAppPreferences } from "@/hooks/use-app-preferences";
 import { useTravelEntries } from "@/hooks/use-travel-entries";
 import { sendEntrySavedNotification } from "@/lib/notifications";
@@ -166,8 +166,9 @@ export default function AddTravelEntryScreen() {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
+        <Text style={[styles.kicker, { color: palette.mutedText }]}>Field Studio</Text>
         <Text style={[styles.title, { color: palette.text }]}>
-          Add Travel Entry
+          ADD{"\n"}TRAVEL ENTRY
         </Text>
         <Text style={[styles.subtitle, { color: palette.mutedText }]}>
           Capture a photo and we’ll attach your current address automatically.
@@ -176,22 +177,24 @@ export default function AddTravelEntryScreen() {
         <View
           style={[
             styles.previewContainer,
-            { borderColor: palette.border, backgroundColor: palette.card },
+            { borderColor: palette.text, backgroundColor: palette.text },
           ]}
         >
-          {imageUri ? (
-            <Image
-              source={{ uri: imageUri }}
-              contentFit="cover"
-              style={styles.previewImage}
-            />
-          ) : (
-            <Text
-              style={[styles.placeholderText, { color: palette.mutedText }]}
-            >
-              No photo selected
-            </Text>
-          )}
+          <View style={[styles.previewInner, { backgroundColor: palette.card }]}> 
+            {imageUri ? (
+              <Image
+                source={{ uri: imageUri }}
+                contentFit="cover"
+                style={styles.previewImage}
+              />
+            ) : (
+              <Text
+                style={[styles.placeholderText, { color: palette.mutedText }]}
+              >
+                No photo selected
+              </Text>
+            )}
+          </View>
         </View>
 
         <Pressable
@@ -201,22 +204,23 @@ export default function AddTravelEntryScreen() {
           style={({ pressed }) => [
             styles.captureButton,
             {
-              backgroundColor: palette.text,
+              backgroundColor: palette.card,
+              borderColor: palette.text,
               opacity: pressed ? 0.85 : 1,
             },
           ]}
         >
           <Text
-            style={[styles.captureButtonText, { color: palette.background }]}
+            style={[styles.captureButtonText, { color: palette.text }]}
           >
-            Take Picture
+            TAKE PICTURE
           </Text>
         </Pressable>
 
         <View
           style={[
             styles.addressBox,
-            { borderColor: palette.border, backgroundColor: palette.card },
+            { borderColor: palette.text, backgroundColor: palette.card },
           ]}
         >
           <Text style={[styles.addressLabel, { color: palette.mutedText }]}>
@@ -251,13 +255,14 @@ export default function AddTravelEntryScreen() {
             styles.saveButton,
             {
               borderColor: palette.text,
+              backgroundColor: palette.text,
               opacity: pressed || isSaving ? 0.8 : 1,
             },
           ]}
           disabled={isSaving}
         >
-          <Text style={[styles.saveButtonText, { color: palette.text }]}>
-            {isSaving ? "Saving..." : "Save Entry"}
+          <Text style={[styles.saveButtonText, { color: palette.background }]}> 
+            {isSaving ? "SAVING..." : "SAVE ENTRY"}
           </Text>
         </Pressable>
       </ScrollView>
@@ -270,26 +275,41 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingHorizontal: 16,
-    paddingTop: 10,
-    paddingBottom: 100,
+    paddingHorizontal: 12,
+    paddingTop: 6,
+    paddingBottom: 40,
+  },
+  kicker: {
+    textAlign: "center",
+    fontSize: 18,
+    fontFamily: Fonts.serif,
   },
   title: {
-    fontSize: 30,
-    fontWeight: "800",
+    marginTop: 14,
+    fontSize: 56,
+    lineHeight: 54,
+    textAlign: "center",
+    fontWeight: "900",
+    letterSpacing: -1.3,
   },
   subtitle: {
     marginTop: 8,
-    marginBottom: 18,
+    marginBottom: 16,
+    textAlign: "center",
     fontSize: 14,
-    lineHeight: 20,
-    fontWeight: "500",
+    lineHeight: 21,
+    fontFamily: Fonts.serif,
   },
   previewContainer: {
     width: "100%",
-    height: 260,
-    borderRadius: 20,
+    height: 330,
+    borderRadius: 14,
     borderWidth: 1,
+    padding: 10,
+  },
+  previewInner: {
+    flex: 1,
+    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
@@ -304,18 +324,20 @@ const styles = StyleSheet.create({
   },
   captureButton: {
     marginTop: 16,
-    borderRadius: 14,
+    borderRadius: 10,
+    borderWidth: 1,
     paddingVertical: 14,
     alignItems: "center",
   },
   captureButtonText: {
-    fontSize: 15,
+    fontSize: 12,
     fontWeight: "700",
+    letterSpacing: 1.4,
   },
   addressBox: {
     marginTop: 18,
     borderWidth: 1,
-    borderRadius: 14,
+    borderRadius: 10,
     padding: 14,
   },
   addressLabel: {
@@ -342,12 +364,13 @@ const styles = StyleSheet.create({
   saveButton: {
     marginTop: 18,
     borderWidth: 1,
-    borderRadius: 14,
+    borderRadius: 10,
     paddingVertical: 14,
     alignItems: "center",
   },
   saveButtonText: {
-    fontSize: 15,
+    fontSize: 12,
     fontWeight: "700",
+    letterSpacing: 1.4,
   },
 });

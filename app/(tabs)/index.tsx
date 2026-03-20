@@ -10,7 +10,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { TravelEntryItem } from "@/components/travel-entry-item";
-import { Colors } from "@/constants/theme";
+import { Colors, Fonts } from "@/constants/theme";
 import { useAppPreferences } from "@/hooks/use-app-preferences";
 import { useTravelEntries } from "@/hooks/use-travel-entries";
 
@@ -19,38 +19,52 @@ export default function HomeScreen() {
   const { theme, toggleTheme } = useAppPreferences();
   const { entries, isLoaded, removeEntry } = useTravelEntries();
   const palette = Colors[theme];
+  const today = new Date();
+
+  const formattedDate = today.toLocaleDateString(undefined, {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
 
   return (
     <SafeAreaView
       style={[styles.safeArea, { backgroundColor: palette.background }]}
     >
-      <View style={styles.headerRow}>
-        <View>
-          <Text style={[styles.title, { color: palette.text }]}>
-            Travel Diary
-          </Text>
-          <Text style={[styles.subtitle, { color: palette.mutedText }]}>
-            Your saved memories
-          </Text>
-        </View>
+      <View style={styles.metaRow}>
+        <View style={[styles.sotdBadge, { borderColor: palette.text }]}></View>
 
-        <Pressable
-          onPress={() => {
-            void toggleTheme();
-          }}
-          style={({ pressed }) => [
-            styles.toggleButton,
-            {
-              borderColor: palette.border,
-              backgroundColor: palette.card,
-              opacity: pressed ? 0.8 : 1,
-            },
-          ]}
-        >
-          <Text style={[styles.toggleText, { color: palette.text }]}>
-            {theme === "light" ? "Dark" : "Light"}
-          </Text>
-        </Pressable>
+        <View style={styles.actionsRow}>
+          <Pressable
+            onPress={() => {
+              void toggleTheme();
+            }}
+            style={({ pressed }) => [
+              styles.linkAction,
+              { opacity: pressed ? 0.75 : 1, borderBottomColor: palette.text },
+            ]}
+          >
+            <Text style={[styles.linkActionText, { color: palette.text }]}>
+              {theme === "light" ? "DARK" : "LIGHT"}
+            </Text>
+          </Pressable>
+        </View>
+      </View>
+
+      <Text style={[styles.dateCaption, { color: palette.mutedText }]}>
+        Save your favorite places
+      </Text>
+
+      <Text style={[styles.title, { color: palette.text }]}>
+        TRAVEL{"\n"}
+        DIARY ARCHIVE
+      </Text>
+
+      <View style={styles.taglineRow}>
+        <View style={[styles.taglineDot, { backgroundColor: palette.text }]} />
+        <Text style={[styles.taglineText, { color: palette.text }]}>
+          The Places You Saved
+        </Text>
       </View>
 
       <FlatList
@@ -59,9 +73,11 @@ export default function HomeScreen() {
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
-          <Text style={[styles.emptyText, { color: palette.mutedText }]}>
-            {isLoaded ? "No Entries yet" : "Loading..."}
-          </Text>
+          <View style={styles.emptyWrap}>
+            <Text style={[styles.emptyText, { color: palette.mutedText }]}>
+              {isLoaded ? "No Entries yet" : "Loading..."}
+            </Text>
+          </View>
         }
         renderItem={({ item }) => (
           <TravelEntryItem
@@ -86,23 +102,6 @@ export default function HomeScreen() {
           />
         )}
       />
-
-      <Pressable
-        onPress={() => router.push("/(tabs)/explore")}
-        style={({ pressed }) => [
-          styles.floatingButton,
-          {
-            backgroundColor: palette.text,
-            opacity: pressed ? 0.85 : 1,
-          },
-        ]}
-      >
-        <Text
-          style={[styles.floatingButtonText, { color: palette.background }]}
-        >
-          Add Entry
-        </Text>
-      </Pressable>
     </SafeAreaView>
   );
 }
@@ -110,54 +109,93 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
   },
-  headerRow: {
+  metaRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingTop: 8,
-    marginBottom: 14,
+    paddingTop: 6,
+  },
+  sotdBadge: {
+    borderWidth: 1,
+    borderRadius: 6,
+    flexDirection: "row",
+    overflow: "hidden",
+  },
+  sotdText: {
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    fontSize: 12,
+    fontWeight: "700",
+    borderRightWidth: 1,
+    borderRightColor: "#7D7D7D",
+  },
+  sotdValue: {
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    fontSize: 24,
+    lineHeight: 24,
+    fontWeight: "800",
+    fontFamily: Fonts.serif,
+  },
+  actionsRow: {
+    flexDirection: "row",
+    gap: 14,
+  },
+  linkAction: {
+    borderBottomWidth: 1,
+    paddingBottom: 1,
+  },
+  linkActionText: {
+    fontSize: 12,
+    fontWeight: "700",
+    letterSpacing: 1.1,
+  },
+  dateCaption: {
+    marginTop: 20,
+    textAlign: "center",
+    fontSize: 18,
+    fontFamily: Fonts.serif,
   },
   title: {
-    fontSize: 30,
-    fontWeight: "800",
+    marginTop: 18,
+    fontSize: 58,
+    lineHeight: 56,
+    textAlign: "center",
+    fontWeight: "900",
+    letterSpacing: -1.4,
   },
-  subtitle: {
-    marginTop: 4,
-    fontSize: 14,
-    fontWeight: "500",
+  taglineRow: {
+    marginTop: 10,
+    marginBottom: 20,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10,
   },
-  toggleButton: {
-    borderWidth: 1,
+  taglineDot: {
+    width: 18,
+    height: 18,
     borderRadius: 999,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
   },
-  toggleText: {
-    fontSize: 13,
+  taglineText: {
+    fontSize: 22,
+    fontFamily: Fonts.serif,
+    textDecorationLine: "underline",
     fontWeight: "700",
   },
   listContent: {
-    paddingBottom: 100,
+    paddingBottom: 22,
     flexGrow: 1,
   },
+  emptyWrap: {
+    marginTop: 60,
+    alignItems: "center",
+  },
   emptyText: {
-    fontSize: 16,
+    fontSize: 18,
     textAlign: "center",
-    marginTop: 80,
-    fontWeight: "600",
-  },
-  floatingButton: {
-    position: "absolute",
-    right: 18,
-    bottom: 16,
-    borderRadius: 999,
-    paddingVertical: 14,
-    paddingHorizontal: 20,
-  },
-  floatingButtonText: {
-    fontSize: 14,
     fontWeight: "700",
   },
 });

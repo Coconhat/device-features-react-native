@@ -2,7 +2,7 @@ import { Image } from "expo-image";
 import { memo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { Colors } from "@/constants/theme";
+import { Colors, Fonts } from "@/constants/theme";
 import { AppTheme, TravelEntry } from "@/types/travel-entry";
 
 type TravelEntryItemProps = {
@@ -23,18 +23,21 @@ function TravelEntryItemComponent({
       style={[
         styles.card,
         {
-          backgroundColor: palette.card,
-          borderColor: palette.border,
+          backgroundColor: palette.text,
+          borderColor: palette.text,
         },
       ]}
     >
-      <Image
-        source={{ uri: entry.imageUri }}
-        style={styles.image}
-        contentFit="cover"
-      />
+      <View style={[styles.imageShell, { backgroundColor: palette.card }]}> 
+        <Image
+          source={{ uri: entry.imageUri }}
+          style={styles.image}
+          contentFit="cover"
+        />
+      </View>
 
       <View style={styles.content}>
+        <Text style={[styles.kicker, { color: palette.mutedText }]}>Saved Place</Text>
         <Text
           style={[styles.address, { color: palette.text }]}
           numberOfLines={3}
@@ -50,7 +53,7 @@ function TravelEntryItemComponent({
           style={({ pressed }) => [
             styles.removeButton,
             {
-              borderColor: palette.danger,
+              borderBottomColor: palette.danger,
               opacity: pressed ? 0.75 : 1,
             },
           ]}
@@ -68,38 +71,54 @@ export const TravelEntryItem = memo(TravelEntryItemComponent);
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 20,
+    borderRadius: 14,
     borderWidth: 1,
-    overflow: "hidden",
-    marginBottom: 14,
+    marginBottom: 18,
+    padding: 10,
+  },
+  imageShell: {
+    borderRadius: 12,
+    padding: 6,
   },
   image: {
     width: "100%",
-    height: 220,
+    height: 270,
+    borderRadius: 8,
   },
   content: {
-    padding: 14,
-    gap: 8,
+    paddingHorizontal: 2,
+    paddingTop: 12,
+    gap: 6,
+  },
+  kicker: {
+    fontSize: 10,
+    textTransform: "uppercase",
+    letterSpacing: 1.2,
+    fontWeight: "700",
   },
   address: {
-    fontSize: 16,
+    fontSize: 32,
+    lineHeight: 34,
+    letterSpacing: -0.6,
     fontWeight: "700",
-    lineHeight: 22,
+    fontFamily: Fonts.serif,
   },
   date: {
-    fontSize: 13,
-    fontWeight: "500",
+    fontSize: 12,
+    fontWeight: "600",
+    textTransform: "uppercase",
+    letterSpacing: 0.7,
   },
   removeButton: {
-    marginTop: 6,
+    marginTop: 8,
     alignSelf: "flex-start",
-    borderWidth: 1,
-    borderRadius: 999,
-    paddingVertical: 8,
-    paddingHorizontal: 14,
+    borderBottomWidth: 1,
+    paddingBottom: 2,
   },
   removeText: {
     fontWeight: "700",
-    fontSize: 13,
+    fontSize: 12,
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
   },
 });

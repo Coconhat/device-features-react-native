@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type StorageLike = {
   getItem: (key: string) => Promise<string | null>;
@@ -8,7 +8,7 @@ type StorageLike = {
 const inMemoryStore = new Map<string, string>();
 
 async function memoryGetItem(key: string): Promise<string | null> {
-  return inMemoryStore.has(key) ? inMemoryStore.get(key) ?? null : null;
+  return inMemoryStore.has(key) ? (inMemoryStore.get(key) ?? null) : null;
 }
 
 async function memorySetItem(key: string, value: string): Promise<void> {
@@ -27,9 +27,9 @@ function isMissingNativeModuleError(error: unknown) {
 
   const message = error.message.toLowerCase();
   return (
-    message.includes('native module is null') ||
-    message.includes('cannot access legacy storage') ||
-    message.includes('asyncstorage is null')
+    message.includes("native module is null") ||
+    message.includes("cannot access legacy storage") ||
+    message.includes("asyncstorage is null")
   );
 }
 

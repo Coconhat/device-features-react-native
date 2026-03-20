@@ -1,6 +1,6 @@
 import { STORAGE_KEYS } from "@/constants/storage-keys";
-import { safeGetItem, safeSetItem } from "./safe-storage";
 import { TravelEntry } from "@/types/travel-entry";
+import { safeGetItem, safeSetItem } from "./safe-storage";
 
 function isValidTravelEntry(entry: unknown): entry is TravelEntry {
   if (!entry || typeof entry !== "object") {

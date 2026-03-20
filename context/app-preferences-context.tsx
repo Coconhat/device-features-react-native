@@ -7,8 +7,8 @@ import {
 } from "react";
 
 import { STORAGE_KEYS } from "@/constants/storage-keys";
-import { safeGetItem, safeSetItem } from "../lib/safe-storage";
 import { AppTheme } from "@/types/travel-entry";
+import { safeGetItem, safeSetItem } from "../lib/safe-storage";
 
 type AppPreferencesContextValue = {
   theme: AppTheme;
