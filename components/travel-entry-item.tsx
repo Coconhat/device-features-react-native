@@ -41,7 +41,7 @@ function TravelEntryItemComponent({
           Saved Place
         </Text>
         <Text
-          style={[styles.address, { color: palette.text }]}
+          style={[styles.address, { color: palette.background }]}
           numberOfLines={3}
         >
           {entry.address}
