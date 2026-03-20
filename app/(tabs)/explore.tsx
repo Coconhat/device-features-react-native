@@ -1,26 +1,40 @@
-import { Image } from 'expo-image';
-import { useFocusEffect } from 'expo-router';
-import * as ImagePicker from 'expo-image-picker';
-import * as Location from 'expo-location';
-import { useCallback, useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Image } from "expo-image";
+import * as ImagePicker from "expo-image-picker";
+import * as Location from "expo-location";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { Colors } from '@/constants/theme';
-import { useAppPreferences } from '@/hooks/use-app-preferences';
-import { useTravelEntries } from '@/hooks/use-travel-entries';
-import { sendEntrySavedNotification } from '@/lib/notifications';
+import { Colors } from "@/constants/theme";
+import { useAppPreferences } from "@/hooks/use-app-preferences";
+import { useTravelEntries } from "@/hooks/use-travel-entries";
+import { sendEntrySavedNotification } from "@/lib/notifications";
 
 function formatAddress(address: Location.LocationGeocodedAddress | null) {
   if (!address) {
-    return '';
+    return "";
   }
 
-  const segments = [address.name, address.street, address.city, address.region, address.country].filter(
-    (segment) => typeof segment === 'string' && segment.trim().length > 0
+  const segments = [
+    address.name,
+    address.street,
+    address.city,
+    address.region,
+    address.country,
+  ].filter(
+    (segment) => typeof segment === "string" && segment.trim().length > 0,
   );
 
-  return segments.join(', ');
+  return segments.join(", ");
 }
 
 export default function AddTravelEntryScreen() {
@@ -28,16 +42,16 @@ export default function AddTravelEntryScreen() {
   const { addEntry } = useTravelEntries();
   const palette = Colors[theme];
 
-  const [imageUri, setImageUri] = useState('');
-  const [address, setAddress] = useState('');
-  const [errorText, setErrorText] = useState('');
+  const [imageUri, setImageUri] = useState("");
+  const [address, setAddress] = useState("");
+  const [errorText, setErrorText] = useState("");
   const [isResolvingAddress, setIsResolvingAddress] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   const resetForm = useCallback(() => {
-    setImageUri('');
-    setAddress('');
-    setErrorText('');
+    setImageUri("");
+    setAddress("");
+    setErrorText("");
     setIsResolvingAddress(false);
     setIsSaving(false);
   }, []);
@@ -47,20 +61,20 @@ export default function AddTravelEntryScreen() {
       return () => {
         resetForm();
       };
-    }, [resetForm])
+    }, [resetForm]),
   );
 
   const capturePhoto = useCallback(async () => {
-    setErrorText('');
+    setErrorText("");
 
     const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
     if (!cameraPermission.granted) {
-      setErrorText('Camera permission is required to take a photo.');
+      setErrorText("Camera permission is required to take a photo.");
       return;
     }
 
     const photoResult = await ImagePicker.launchCameraAsync({
-      mediaTypes: ['images'],
+      mediaTypes: ["images"],
       allowsEditing: true,
       quality: 0.8,
     });
@@ -71,18 +85,21 @@ export default function AddTravelEntryScreen() {
 
     const selectedUri = photoResult.assets[0].uri.trim();
     if (!selectedUri) {
-      setErrorText('Invalid photo selected. Please try again.');
+      setErrorText("Invalid photo selected. Please try again.");
       return;
     }
 
     setImageUri(selectedUri);
-    setAddress('');
+    setAddress("");
     setIsResolvingAddress(true);
 
     try {
-      const locationPermission = await Location.requestForegroundPermissionsAsync();
+      const locationPermission =
+        await Location.requestForegroundPermissionsAsync();
       if (!locationPermission.granted) {
-        setErrorText('Location permission is required to detect your current address.');
+        setErrorText(
+          "Location permission is required to detect your current address.",
+        );
         return;
       }
 
@@ -97,28 +114,28 @@ export default function AddTravelEntryScreen() {
 
       const parsedAddress = formatAddress(geocodeResult[0] ?? null);
       if (!parsedAddress) {
-        setErrorText('Address could not be determined. Please try again.');
+        setErrorText("Address could not be determined. Please try again.");
         return;
       }
 
       setAddress(parsedAddress);
     } catch {
-      setErrorText('Failed to fetch your current address. Please try again.');
+      setErrorText("Failed to fetch your current address. Please try again.");
     } finally {
       setIsResolvingAddress(false);
     }
   }, []);
 
   const saveEntry = useCallback(async () => {
-    setErrorText('');
+    setErrorText("");
 
     if (!imageUri.trim()) {
-      setErrorText('Please take a photo first.');
+      setErrorText("Please take a photo first.");
       return;
     }
 
     if (!address.trim()) {
-      setErrorText('Current address is required before saving.');
+      setErrorText("Current address is required before saving.");
       return;
     }
 
@@ -130,7 +147,7 @@ export default function AddTravelEntryScreen() {
     const result = await addEntry({ imageUri, address });
 
     if (!result.ok) {
-      setErrorText(result.error ?? 'Unable to save this travel entry.');
+      setErrorText(result.error ?? "Unable to save this travel entry.");
       setIsSaving(false);
       return;
     }
@@ -138,20 +155,42 @@ export default function AddTravelEntryScreen() {
     await sendEntrySavedNotification(address);
     resetForm();
     setIsSaving(false);
-    Alert.alert('Saved', 'Your travel entry has been saved successfully.');
+    Alert.alert("Saved", "Your travel entry has been saved successfully.");
   }, [addEntry, address, imageUri, isResolvingAddress, isSaving, resetForm]);
 
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: palette.background }]}>
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <Text style={[styles.title, { color: palette.text }]}>Add Travel Entry</Text>
-        <Text style={[styles.subtitle, { color: palette.mutedText }]}>Capture a photo and we’ll attach your current address automatically.</Text>
+    <SafeAreaView
+      style={[styles.safeArea, { backgroundColor: palette.background }]}
+    >
+      <ScrollView
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+      >
+        <Text style={[styles.title, { color: palette.text }]}>
+          Add Travel Entry
+        </Text>
+        <Text style={[styles.subtitle, { color: palette.mutedText }]}>
+          Capture a photo and we’ll attach your current address automatically.
+        </Text>
 
-        <View style={[styles.previewContainer, { borderColor: palette.border, backgroundColor: palette.card }]}>
+        <View
+          style={[
+            styles.previewContainer,
+            { borderColor: palette.border, backgroundColor: palette.card },
+          ]}
+        >
           {imageUri ? (
-            <Image source={{ uri: imageUri }} contentFit="cover" style={styles.previewImage} />
+            <Image
+              source={{ uri: imageUri }}
+              contentFit="cover"
+              style={styles.previewImage}
+            />
           ) : (
-            <Text style={[styles.placeholderText, { color: palette.mutedText }]}>No photo selected</Text>
+            <Text
+              style={[styles.placeholderText, { color: palette.mutedText }]}
+            >
+              No photo selected
+            </Text>
           )}
         </View>
 
@@ -165,23 +204,44 @@ export default function AddTravelEntryScreen() {
               backgroundColor: palette.text,
               opacity: pressed ? 0.85 : 1,
             },
-          ]}>
-          <Text style={[styles.captureButtonText, { color: palette.background }]}>Take Picture</Text>
+          ]}
+        >
+          <Text
+            style={[styles.captureButtonText, { color: palette.background }]}
+          >
+            Take Picture
+          </Text>
         </Pressable>
 
-        <View style={[styles.addressBox, { borderColor: palette.border, backgroundColor: palette.card }]}>
-          <Text style={[styles.addressLabel, { color: palette.mutedText }]}>Current Address</Text>
+        <View
+          style={[
+            styles.addressBox,
+            { borderColor: palette.border, backgroundColor: palette.card },
+          ]}
+        >
+          <Text style={[styles.addressLabel, { color: palette.mutedText }]}>
+            Current Address
+          </Text>
           {isResolvingAddress ? (
             <View style={styles.addressLoading}>
               <ActivityIndicator color={palette.text} />
-              <Text style={[styles.addressText, { color: palette.text }]}>Detecting address...</Text>
+              <Text style={[styles.addressText, { color: palette.text }]}>
+                Detecting address...
+              </Text>
             </View>
           ) : (
-            <Text style={[styles.addressText, { color: palette.text }]}> {address || 'No address yet'} </Text>
+            <Text style={[styles.addressText, { color: palette.text }]}>
+              {" "}
+              {address || "No address yet"}{" "}
+            </Text>
           )}
         </View>
 
-        {!!errorText && <Text style={[styles.errorText, { color: palette.danger }]}>{errorText}</Text>}
+        {!!errorText && (
+          <Text style={[styles.errorText, { color: palette.danger }]}>
+            {errorText}
+          </Text>
+        )}
 
         <Pressable
           onPress={() => {
@@ -194,9 +254,10 @@ export default function AddTravelEntryScreen() {
               opacity: pressed || isSaving ? 0.8 : 1,
             },
           ]}
-          disabled={isSaving}>
+          disabled={isSaving}
+        >
           <Text style={[styles.saveButtonText, { color: palette.text }]}>
-            {isSaving ? 'Saving...' : 'Save Entry'}
+            {isSaving ? "Saving..." : "Save Entry"}
           </Text>
         </Pressable>
       </ScrollView>
@@ -215,41 +276,41 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 30,
-    fontWeight: '800',
+    fontWeight: "800",
   },
   subtitle: {
     marginTop: 8,
     marginBottom: 18,
     fontSize: 14,
     lineHeight: 20,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   previewContainer: {
-    width: '100%',
+    width: "100%",
     height: 260,
     borderRadius: 20,
     borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
   },
   previewImage: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   placeholderText: {
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   captureButton: {
     marginTop: 16,
     borderRadius: 14,
     paddingVertical: 14,
-    alignItems: 'center',
+    alignItems: "center",
   },
   captureButtonText: {
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   addressBox: {
     marginTop: 18,
@@ -259,34 +320,34 @@ const styles = StyleSheet.create({
   },
   addressLabel: {
     fontSize: 12,
-    fontWeight: '700',
-    textTransform: 'uppercase',
+    fontWeight: "700",
+    textTransform: "uppercase",
     marginBottom: 8,
   },
   addressLoading: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 10,
   },
   addressText: {
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: "600",
     lineHeight: 22,
   },
   errorText: {
     marginTop: 12,
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   saveButton: {
     marginTop: 18,
     borderWidth: 1,
     borderRadius: 14,
     paddingVertical: 14,
-    alignItems: 'center',
+    alignItems: "center",
   },
   saveButtonText: {
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: "700",
   },
 });

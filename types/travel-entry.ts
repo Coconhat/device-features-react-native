@@ -1,4 +1,4 @@
-export type AppTheme = 'light' | 'dark';
+export type AppTheme = "light" | "dark";
 
 export type TravelEntry = {
   id: string;

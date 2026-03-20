@@ -1,8 +1,14 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createContext, PropsWithChildren, useEffect, useMemo, useState } from 'react';
+import {
+  createContext,
+  PropsWithChildren,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
-import { STORAGE_KEYS } from '@/constants/storage-keys';
-import { AppTheme } from '@/types/travel-entry';
+import { STORAGE_KEYS } from "@/constants/storage-keys";
+import { safeGetItem, safeSetItem } from "../lib/safe-storage";
+import { AppTheme } from "@/types/travel-entry";
 
 type AppPreferencesContextValue = {
   theme: AppTheme;
@@ -10,10 +16,11 @@ type AppPreferencesContextValue = {
   toggleTheme: () => Promise<void>;
 };
 
-export const AppPreferencesContext = createContext<AppPreferencesContextValue | null>(null);
+export const AppPreferencesContext =
+  createContext<AppPreferencesContextValue | null>(null);
 
 export function AppPreferencesProvider({ children }: PropsWithChildren) {
-  const [theme, setTheme] = useState<AppTheme>('light');
+  const [theme, setTheme] = useState<AppTheme>("light");
   const [isThemeLoaded, setIsThemeLoaded] = useState(false);
 
   useEffect(() => {
@@ -21,13 +28,13 @@ export function AppPreferencesProvider({ children }: PropsWithChildren) {
 
     async function loadTheme() {
       try {
-        const storedTheme = await AsyncStorage.getItem(STORAGE_KEYS.theme);
+        const storedTheme = await safeGetItem(STORAGE_KEYS.theme);
 
         if (!isMounted) {
           return;
         }
 
-        if (storedTheme === 'light' || storedTheme === 'dark') {
+        if (storedTheme === "light" || storedTheme === "dark") {
           setTheme(storedTheme);
         }
       } finally {
@@ -49,13 +56,17 @@ export function AppPreferencesProvider({ children }: PropsWithChildren) {
       theme,
       isThemeLoaded,
       toggleTheme: async () => {
-        const nextTheme: AppTheme = theme === 'light' ? 'dark' : 'light';
+        const nextTheme: AppTheme = theme === "light" ? "dark" : "light";
         setTheme(nextTheme);
-        await AsyncStorage.setItem(STORAGE_KEYS.theme, nextTheme);
+        await safeSetItem(STORAGE_KEYS.theme, nextTheme);
       },
     }),
-    [isThemeLoaded, theme]
+    [isThemeLoaded, theme],
   );
 
-  return <AppPreferencesContext.Provider value={value}>{children}</AppPreferencesContext.Provider>;
+  return (
+    <AppPreferencesContext.Provider value={value}>
+      {children}
+    </AppPreferencesContext.Provider>
+  );
 }

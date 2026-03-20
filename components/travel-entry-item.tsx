@@ -1,9 +1,9 @@
-import { Image } from 'expo-image';
-import { memo } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image } from "expo-image";
+import { memo } from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { Colors } from '@/constants/theme';
-import { AppTheme, TravelEntry } from '@/types/travel-entry';
+import { Colors } from "@/constants/theme";
+import { AppTheme, TravelEntry } from "@/types/travel-entry";
 
 type TravelEntryItemProps = {
   entry: TravelEntry;
@@ -11,7 +11,11 @@ type TravelEntryItemProps = {
   onRemove: (id: string) => void;
 };
 
-function TravelEntryItemComponent({ entry, theme, onRemove }: TravelEntryItemProps) {
+function TravelEntryItemComponent({
+  entry,
+  theme,
+  onRemove,
+}: TravelEntryItemProps) {
   const palette = Colors[theme];
 
   return (
@@ -22,11 +26,19 @@ function TravelEntryItemComponent({ entry, theme, onRemove }: TravelEntryItemPro
           backgroundColor: palette.card,
           borderColor: palette.border,
         },
-      ]}>
-      <Image source={{ uri: entry.imageUri }} style={styles.image} contentFit="cover" />
+      ]}
+    >
+      <Image
+        source={{ uri: entry.imageUri }}
+        style={styles.image}
+        contentFit="cover"
+      />
 
       <View style={styles.content}>
-        <Text style={[styles.address, { color: palette.text }]} numberOfLines={3}>
+        <Text
+          style={[styles.address, { color: palette.text }]}
+          numberOfLines={3}
+        >
           {entry.address}
         </Text>
         <Text style={[styles.date, { color: palette.mutedText }]}>
@@ -41,8 +53,11 @@ function TravelEntryItemComponent({ entry, theme, onRemove }: TravelEntryItemPro
               borderColor: palette.danger,
               opacity: pressed ? 0.75 : 1,
             },
-          ]}>
-          <Text style={[styles.removeText, { color: palette.danger }]}>Remove</Text>
+          ]}
+        >
+          <Text style={[styles.removeText, { color: palette.danger }]}>
+            Remove
+          </Text>
         </Pressable>
       </View>
     </View>
@@ -55,11 +70,11 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: 20,
     borderWidth: 1,
-    overflow: 'hidden',
+    overflow: "hidden",
     marginBottom: 14,
   },
   image: {
-    width: '100%',
+    width: "100%",
     height: 220,
   },
   content: {
@@ -68,23 +83,23 @@ const styles = StyleSheet.create({
   },
   address: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
     lineHeight: 22,
   },
   date: {
     fontSize: 13,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   removeButton: {
     marginTop: 6,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
     borderWidth: 1,
     borderRadius: 999,
     paddingVertical: 8,
     paddingHorizontal: 14,
   },
   removeText: {
-    fontWeight: '700',
+    fontWeight: "700",
     fontSize: 13,
   },
 });
