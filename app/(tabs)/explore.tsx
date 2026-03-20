@@ -166,7 +166,9 @@ export default function AddTravelEntryScreen() {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={[styles.kicker, { color: palette.mutedText }]}>Field Studio</Text>
+        <Text style={[styles.kicker, { color: palette.mutedText }]}>
+          Field Studio
+        </Text>
         <Text style={[styles.title, { color: palette.text }]}>
           ADD{"\n"}TRAVEL ENTRY
         </Text>
@@ -180,7 +182,9 @@ export default function AddTravelEntryScreen() {
             { borderColor: palette.text, backgroundColor: palette.text },
           ]}
         >
-          <View style={[styles.previewInner, { backgroundColor: palette.card }]}> 
+          <View
+            style={[styles.previewInner, { backgroundColor: palette.card }]}
+          >
             {imageUri ? (
               <Image
                 source={{ uri: imageUri }}
@@ -210,9 +214,7 @@ export default function AddTravelEntryScreen() {
             },
           ]}
         >
-          <Text
-            style={[styles.captureButtonText, { color: palette.text }]}
-          >
+          <Text style={[styles.captureButtonText, { color: palette.text }]}>
             TAKE PICTURE
           </Text>
         </Pressable>
@@ -261,7 +263,7 @@ export default function AddTravelEntryScreen() {
           ]}
           disabled={isSaving}
         >
-          <Text style={[styles.saveButtonText, { color: palette.background }]}> 
+          <Text style={[styles.saveButtonText, { color: palette.background }]}>
             {isSaving ? "SAVING..." : "SAVE ENTRY"}
           </Text>
         </Pressable>

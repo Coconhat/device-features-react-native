@@ -28,7 +28,7 @@ function TravelEntryItemComponent({
         },
       ]}
     >
-      <View style={[styles.imageShell, { backgroundColor: palette.card }]}> 
+      <View style={[styles.imageShell, { backgroundColor: palette.card }]}>
         <Image
           source={{ uri: entry.imageUri }}
           style={styles.image}
@@ -37,7 +37,9 @@ function TravelEntryItemComponent({
       </View>
 
       <View style={styles.content}>
-        <Text style={[styles.kicker, { color: palette.mutedText }]}>Saved Place</Text>
+        <Text style={[styles.kicker, { color: palette.mutedText }]}>
+          Saved Place
+        </Text>
         <Text
           style={[styles.address, { color: palette.text }]}
           numberOfLines={3}
